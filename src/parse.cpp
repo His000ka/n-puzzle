@@ -91,7 +91,31 @@ void Parse::parseFile(const std::string& filename) {
 
             }
         } else {
-
+            for (const auto& token : tokens) {
+                if (!isAllDigits(token)) {
+                    throw std::invalid_argument(
+                            "Error: '" + token + "' is not a valid integer"
+                    );
+                }
+                try {
+                    numbers.push_back(std::stoi(token));
+                    std::cout << token + " ";
+                } catch (const std::exception& e) {
+                    throw std::invalid_argument(
+                        "Error: invalid number '" + token + "'"
+                    );
+                }
+            }
+            std::cout << std::endl;
         }
     }
+    file.close();
+    if (size == -1) {
+        throw std::invalid_argument(
+            "Error: no valid puzzle size found in file"
+        );
+    }
+    //creer le puzle;
+    //def le puzzle;
+    //valider le puzzle;
 }
