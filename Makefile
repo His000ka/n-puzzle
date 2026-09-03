@@ -3,7 +3,8 @@ CC = c++
 CFLAGS = -Wall -Wextra -Werror
 INCLUDES = -I src
 
-SRCS = src/test.cpp
+SRCS = src/test.cpp \
+		src/main.cpp src/parse.cpp
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(NAME)
