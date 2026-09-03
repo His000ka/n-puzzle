@@ -1,3 +1,5 @@
+#include "include.hpp"
+
 class Puzzle 
 {
     public:
@@ -5,8 +7,11 @@ class Puzzle
         std::vector<int>	board;
 		int	blank_pos;
         
-        Puzzle(/* args */);
-        ~Puzzle();
+        Puzzle() : size(0), blank_pos(-1) {}
+        Puzzle(int n) : size(n), blank_pos(-1) {
+            board.resize(n * n);
+        }
+
         void print() const;
     
     private:

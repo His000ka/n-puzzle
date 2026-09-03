@@ -1,9 +1,10 @@
 #include "include.hpp"
+#include "puzzle.hpp"
 
 class Parse
 {
 	public:
-		static void parseFile(const std::string& filename);
+		static Puzzle parseFile(const std::string& filename);
 		// Parse(/* args */);
 		// ~Parse();
 	

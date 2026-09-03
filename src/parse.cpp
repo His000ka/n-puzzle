@@ -45,7 +45,7 @@ bool isAllDigits(const std::string& str) {
     return true;
 }
 
-void Parse::parseFile(const std::string& filename) {
+Puzzle Parse::parseFile(const std::string& filename) {
     std::ifstream    file(filename);
 
     if (!file.is_open()) {
@@ -116,6 +116,30 @@ void Parse::parseFile(const std::string& filename) {
         );
     }
     //creer le puzle;
+
+    Puzzle puzzle(size);
+
     //def le puzzle;
-    //valider le puzzle;
+    puzzle.board = numbers;
+
+
+    for (int i = 0; i < (int)puzzle.board.size(); i++) {
+        if (puzzle.board[i] == 0) {
+            puzzle.blank_pos = i;
+            break;
+        }
+    }
+ 
+    if (puzzle.blank_pos == -1) {
+        throw std::invalid_argument("Error: blank (0) not found");
+    }
+
+    std::cout << "print 1 :" << std::endl;
+
+    
+    
+    //valider le puzzle; //////// tooooodoooooooooo
+    puzzle.print();
+
+    return puzzle;
 }
