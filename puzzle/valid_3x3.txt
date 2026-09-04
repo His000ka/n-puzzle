@@ -1,5 +1,5 @@
 # this is a comment
-4 #kk
+3 #kk
 
 3 2 6 #comment
 1 4 0
@@ -7,5 +7,4 @@
  
 #kk
 
-
-42
+#42

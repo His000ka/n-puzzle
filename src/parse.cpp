@@ -45,6 +45,43 @@ bool isAllDigits(const std::string& str) {
     return true;
 }
 
+void validatePuzzle(const Puzzle& puzzle) {
+    int expected_size = puzzle.size * puzzle.size;
+ 
+    //valid la taille
+    if ((int)puzzle.board.size() != expected_size) {
+        throw std::invalid_argument(
+            "Error: expected " + std::to_string(expected_size) 
+            + " numbers, got " + std::to_string(puzzle.board.size())
+        );
+    }
+
+
+    //valid les valeurs du puzzle
+    std::set<int>   seen;
+    for (int num : puzzle.board) {
+        if (num < 0 || num >= expected_size) {
+            throw std::invalid_argument(
+                "Error: number " + std::to_string(num) 
+                + " out of range [0, " + std::to_string(expected_size - 1) + "]"
+            );
+        }
+        if (seen.count(num)) {
+            throw std::invalid_argument(
+                "Error: duplicate number " + std::to_string(num)
+            );
+
+        }
+        seen.insert(num);
+    }
+
+    //valid qu'il y est bien le 0
+    if (!seen.count(0)) {
+        throw std::invalid_argument("Error: missing 0 (blank space)");
+    }
+
+}
+
 Puzzle Parse::parseFile(const std::string& filename) {
     std::ifstream    file(filename);
 
@@ -134,12 +171,8 @@ Puzzle Parse::parseFile(const std::string& filename) {
         throw std::invalid_argument("Error: blank (0) not found");
     }
 
-    std::cout << "print 1 :" << std::endl;
+    validatePuzzle(puzzle);
 
-    
-    
-    //valider le puzzle; //////// tooooodoooooooooo
-    puzzle.print();
-
+    std::cout << "puzzle valide !" << std::endl;
     return puzzle;
 }
