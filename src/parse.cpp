@@ -45,6 +45,34 @@ bool isAllDigits(const std::string& str) {
     return true;
 }
 
+bool isSolvable(const Puzzle& puzzle) {
+    int n = puzzle.size * puzzle.size;
+    
+    // ÉTAPE 1: Compter les inversions
+    int inversions = 0;
+    for (int i = 0; i < n; i++) {
+        if (puzzle.board[i] == 0) continue;  // Ignore le blanc
+        
+        for (int j = i + 1; j < n; j++) {
+            if (puzzle.board[j] == 0) continue;
+            
+            if (puzzle.board[i] > puzzle.board[j]) {
+                inversions++;  // Trouvé une inversion!
+            }
+        }
+    }
+    
+    if (puzzle.size % 2 == 1) {
+        // IMPAIRE: inversions doivent être PAIR
+        return inversions % 2 == 0;
+    } else {
+        // PAIRE: (inversions + blank_row) doivent être IMPAIR
+        int blank_row_from_bottom = puzzle.size - (puzzle.blank_pos / puzzle.size);
+        return (inversions + blank_row_from_bottom) % 2 == 1;
+    }
+}
+
+
 void validatePuzzle(const Puzzle& puzzle) {
     int expected_size = puzzle.size * puzzle.size;
  
@@ -80,7 +108,13 @@ void validatePuzzle(const Puzzle& puzzle) {
         throw std::invalid_argument("Error: missing 0 (blank space)");
     }
 
+    //valid la solvabilite
+    if (!isSolvable(puzzle)) {
+        throw std::invalid_argument("Error: puzzle is unsolvable");
+    }
+
 }
+
 
 Puzzle Parse::parseFile(const std::string& filename) {
     std::ifstream    file(filename);
