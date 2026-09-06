@@ -30,7 +30,7 @@ std::vector<std::string> Parse::tokenize(const std::string& line) {
     if (!token.empty()) {
         tokens.push_back(token);
     }
- 
+
     return tokens;
 
 }
@@ -46,51 +46,57 @@ bool isAllDigits(const std::string& str) {
 }
 
 bool isSolvable(const Puzzle& puzzle) {
-    int n = puzzle.size * puzzle.size;
-    
+    int size = puzzle.getSize();
+    std::vector<int> board = puzzle.getBoard();
+    int blank_pos = puzzle.getBlankPos();
+    int n = size * size;
+
     // ÉTAPE 1: Compter les inversions
     int inversions = 0;
     for (int i = 0; i < n; i++) {
-        if (puzzle.board[i] == 0) continue;  // Ignore le blanc
-        
+        if (board[i] == 0) continue;  // Ignore le blanc
+
         for (int j = i + 1; j < n; j++) {
-            if (puzzle.board[j] == 0) continue;
-            
-            if (puzzle.board[i] > puzzle.board[j]) {
+            if (board[j] == 0) continue;
+
+            if (board[i] > board[j]) {
                 inversions++;  // Trouvé une inversion!
             }
         }
     }
-    
-    if (puzzle.size % 2 == 1) {
+
+    if (size % 2 == 1) {
         // IMPAIRE: inversions doivent être PAIR
         return inversions % 2 == 0;
     } else {
         // PAIRE: (inversions + blank_row) doivent être IMPAIR
-        int blank_row_from_bottom = puzzle.size - (puzzle.blank_pos / puzzle.size);
+        int blank_row_from_bottom = size - (blank_pos / size);
         return (inversions + blank_row_from_bottom) % 2 == 1;
     }
 }
 
 
 void validatePuzzle(const Puzzle& puzzle) {
-    int expected_size = puzzle.size * puzzle.size;
- 
+    int size = puzzle.getSize();
+    std::vector<int> board = puzzle.getBoard();
+    int blank_pos = puzzle.getBlankPos();
+    int expected_size = size * size;
+
     //valid la taille
-    if ((int)puzzle.board.size() != expected_size) {
+    if ((int)board.size() != expected_size) {
         throw std::invalid_argument(
-            "Error: expected " + std::to_string(expected_size) 
-            + " numbers, got " + std::to_string(puzzle.board.size())
+            "Error: expected " + std::to_string(expected_size)
+            + " numbers, got " + std::to_string(board.size())
         );
     }
 
 
     //valid les valeurs du puzzle
     std::set<int>   seen;
-    for (int num : puzzle.board) {
+    for (int num : board) {
         if (num < 0 || num >= expected_size) {
             throw std::invalid_argument(
-                "Error: number " + std::to_string(num) 
+                "Error: number " + std::to_string(num)
                 + " out of range [0, " + std::to_string(expected_size - 1) + "]"
             );
         }
@@ -120,7 +126,7 @@ Puzzle Parse::parseFile(const std::string& filename) {
     std::ifstream    file(filename);
 
     if (!file.is_open()) {
-        throw std::runtime_error("Error: cannot open file" + filename);
+        throw std::runtime_error("Error: cannot open file " + filename);
     }
 
     std::string line;
@@ -134,7 +140,7 @@ Puzzle Parse::parseFile(const std::string& filename) {
         if (size == -1) {
             if (tokens.size() > 1) {
                 throw std::invalid_argument(
-                    "Error: size must be a single number (found " 
+                    "Error: size must be a single number (found "
             + std::to_string(tokens.size()) + ")"
                 );
             }
@@ -191,17 +197,17 @@ Puzzle Parse::parseFile(const std::string& filename) {
     Puzzle puzzle(size);
 
     //def le puzzle;
-    puzzle.board = numbers;
+    puzzle.setBoard(numbers);
 
 
-    for (int i = 0; i < (int)puzzle.board.size(); i++) {
-        if (puzzle.board[i] == 0) {
-            puzzle.blank_pos = i;
+    for (int i = 0; i < (int)numbers.size(); i++) {
+        if (numbers[i] == 0) {
+            puzzle.setBlankPos(i);
             break;
         }
     }
- 
-    if (puzzle.blank_pos == -1) {
+
+    if (puzzle.getBlankPos() == -1) {
         throw std::invalid_argument("Error: blank (0) not found");
     }
 
